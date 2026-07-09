@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: agentops-api
+spec:
+  selector:
+    app: agentops-api
+  ports:
+    - port: 80
+      targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: agentops-dashboard
+spec:
+  selector:
+    app: agentops-dashboard
+  ports:
+    - port: 80
+      targetPort: 80
+  type: LoadBalancer

@@ -1,0 +1,22 @@
+[
+  {"title": "High CPU on api-server-01", "description": "CPU is at 98% for 10 minutes, service is responding slowly.", "expected_category": "infra", "expected_agent": "resolver_agent"},
+  {"title": "Database slow queries detected", "description": "pg_stat_activity shows 50 queries running > 30s. Users reporting timeouts.", "expected_category": "db", "expected_agent": "resolver_agent"},
+  {"title": "Disk full on logging node", "description": "/var/log is 100% full, log shipping has stopped.", "expected_category": "infra", "expected_agent": "resolver_agent"},
+  {"title": "Service crash loop in payment-svc", "description": "payment-svc is restarting every 2 minutes with OOMKilled. Revenue impact.", "expected_category": "app", "expected_agent": "resolver_agent"},
+  {"title": "Unknown latency spike in checkout flow", "description": "P99 latency jumped from 200ms to 4s. No recent deploys. Root cause unknown.", "expected_category": "app", "expected_agent": "research_agent"},
+  {"title": "SSL certificate expiring in 2 days", "description": "Certificate for api.example.com expires in 48 hours.", "expected_category": "security", "expected_agent": "resolver_agent"},
+  {"title": "Redis memory at 95%", "description": "Redis instance is at 95% memory utilization. Eviction policy kicking in.", "expected_category": "infra", "expected_agent": "resolver_agent"},
+  {"title": "API error rate at 12%", "description": "5xx error rate jumped to 12% across all endpoints after the 3pm deploy.", "expected_category": "app", "expected_agent": "research_agent"},
+  {"title": "Kafka consumer lag increasing", "description": "Consumer group orders-processor has 500k message lag and growing.", "expected_category": "infra", "expected_agent": "research_agent"},
+  {"title": "Intermittent 503 from load balancer", "description": "Health checks failing for 2/5 backend instances intermittently.", "expected_category": "infra", "expected_agent": "research_agent"},
+  {"title": "DB connection pool exhausted", "description": "Max connections reached on Postgres primary. New connections refused.", "expected_category": "db", "expected_agent": "resolver_agent"},
+  {"title": "Memory leak in worker service", "description": "worker-svc RSS growing 100MB/hour since last deploy. No restarts configured.", "expected_category": "app", "expected_agent": "research_agent"},
+  {"title": "S3 bucket policy change detected", "description": "Audit log shows bucket acl changed to public-read at 02:15 UTC.", "expected_category": "security", "expected_agent": "resolver_agent"},
+  {"title": "Autoscaler not scaling out", "description": "HPA shows 95% CPU across all pods but replica count not increasing.", "expected_category": "infra", "expected_agent": "research_agent"},
+  {"title": "Slow DNS resolution", "description": "DNS lookups taking >500ms causing connection delays across microservices.", "expected_category": "infra", "expected_agent": "research_agent"},
+  {"title": "ETL pipeline stalled", "description": "Nightly ETL job has been running for 6 hours with no progress.", "expected_category": "db", "expected_agent": "research_agent"},
+  {"title": "TLS handshake failures in EU region", "description": "TLS errors spiking in eu-west-1 only. Other regions healthy.", "expected_category": "security", "expected_agent": "research_agent"},
+  {"title": "Flapping healthcheck on edge nodes", "description": "3 edge nodes alternating healthy/unhealthy every 30s.", "expected_category": "infra", "expected_agent": "research_agent"},
+  {"title": "gRPC timeout between services", "description": "Deadline exceeded errors between auth-svc and user-svc. Started 20min ago.", "expected_category": "app", "expected_agent": "research_agent"},
+  {"title": "Runbook needed for on-call rotation", "description": "New engineer needs runbook for weekend on-call escalation procedures.", "expected_category": "unknown", "expected_agent": "resolver_agent"}
+]
