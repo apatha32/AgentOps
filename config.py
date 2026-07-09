@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     otel_exporter_otlp_endpoint: str = "http://localhost:4317"
     app_env: str = "development"
     log_level: str = "INFO"
+    api_key: str = ""  # When set, all non-health requests require X-API-Key header
 
 
 settings = Settings()

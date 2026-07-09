@@ -1,0 +1,7 @@
+[lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]  # line too long -- handled by formatter
+
+[lint.per-file-ignores]
+"alembic/*" = ["F401"]
+"tests/*" = ["F401", "F811"]
