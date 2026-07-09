@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgentOps - Multi-Agent Ops Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d0d1a;
+      --surface:   #13131f;
+      --surface2:  #1a1a2e;
+      --border:    rgba(255,255,255,0.08);
+      --text:      #e2e2f0;
+      --muted:     rgba(255,255,255,0.45);
+      --accent:    #6366f1;
+      --accent2:   #818cf8;
+      --green:     #22c55e;
+      --purple:    #a855f7;
+      --blue:      #3b82f6;
+      --orange:    #f97316;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    a { color: var(--accent2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── NAV ────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(13,13,26,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+    }
+
+    .nav-brand {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .nav-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-size: 0.875rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+
+    /* ── HERO ───────────────────────────────── */
+    .hero {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 7rem 2rem 5rem;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent2);
+      border: 1px solid rgba(99,102,241,0.35);
+      background: rgba(99,102,241,0.08);
+      border-radius: 999px;
+      padding: 0.3rem 1rem;
+      margin-bottom: 1.75rem;
+      letter-spacing: 0.05em;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.15;
+      color: #fff;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent2), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      font-size: 1.125rem;
+      color: var(--muted);
+      max-width: 620px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.5rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #4f52d6; text-decoration: none; }
+
+    .btn-ghost {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.06); text-decoration: none; }
+
+    .btn-disabled {
+      background: var(--surface2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    /* ── PIPELINE DIAGRAM ───────────────────── */
+    .pipeline-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.1em;
+      color: var(--accent2);
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      max-width: 560px;
+      margin-bottom: 2.5rem;
+      font-size: 0.975rem;
+    }
+
+    .pipeline {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+    }
+
+    .pipeline-node {
+      flex: 1;
+      min-width: 160px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .pipeline-node .node-tag {
+      font-size: 0.65rem;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.4rem;
+    }
+
+    .pipeline-node .node-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 0.4rem;
+    }
+
+    .pipeline-node .node-desc {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .tag-triage  { color: var(--purple); }
+    .tag-research { color: var(--blue); }
+    .tag-resolver { color: var(--green); }
+    .tag-infra    { color: var(--orange); }
+
+    .border-triage  { border-color: rgba(168,85,247,0.35); }
+    .border-research { border-color: rgba(59,130,246,0.35); }
+    .border-resolver { border-color: rgba(34,197,94,0.35); }
+    .border-infra    { border-color: rgba(249,115,22,0.35); }
+
+    .pipeline-arrow {
+      display: flex;
+      align-items: center;
+      padding: 0 0.5rem;
+      padding-top: 2rem;
+      color: var(--muted);
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .pipeline-split {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      flex: 2;
+    }
+
+    .split-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    /* ── FEATURES GRID ──────────────────────── */
+    .features-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: border-color 0.2s;
+    }
+
+    .feature-card:hover { border-color: rgba(99,102,241,0.4); }
+
+    .feature-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-card h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 0.4rem;
+    }
+
+    .feature-card p {
+      font-size: 0.825rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /* ── STACK TABLE ────────────────────────── */
+    .stack-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .stack-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .stack-layer {
+      font-size: 0.68rem;
+      font-family: 'JetBrains Mono', monospace;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent2);
+    }
+
+    .stack-tech {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .stack-detail {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    /* ── CODE BLOCK ─────────────────────────── */
+    .quickstart-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .code-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .code-header {
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .code-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+
+    .code-title {
+      font-size: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--muted);
+      margin-left: 0.25rem;
+    }
+
+    pre {
+      padding: 1.5rem;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.825rem;
+      line-height: 1.7;
+      color: #c9d1e9;
+    }
+
+    .c-comment { color: #6272a4; }
+    .c-cmd     { color: #8be9fd; }
+    .c-str     { color: #f1fa8c; }
+
+    /* ── INTERVIEW SECTION ──────────────────── */
+    .interview-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .interview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .interview-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .interview-card h3 {
+      font-size: 0.85rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--accent2);
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .interview-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .interview-card li {
+      font-size: 0.825rem;
+      color: var(--muted);
+      padding-left: 1rem;
+      position: relative;
+    }
+
+    .interview-card li::before {
+      content: '-';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    /* ── FOOTER ─────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    footer p {
+      font-size: 0.825rem;
+      color: var(--muted);
+    }
+
+    footer a { color: var(--accent2); }
+
+    /* ── DIVIDER ────────────────────────────── */
+    .divider {
+      max-width: 900px;
+      margin: 0 auto;
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── RESPONSIVE ─────────────────────────── */
+    @media (max-width: 640px) {
+      .pipeline { flex-direction: column; }
+      .pipeline-arrow { transform: rotate(90deg); align-self: center; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <div class="nav-dot"></div>
+    AgentOps
+  </div>
+  <ul class="nav-links">
+    <li><a href="#how-it-works">How it works</a></li>
+    <li><a href="#stack">Stack</a></li>
+    <li><a href="#quickstart">Quickstart</a></li>
+    <li><a href="https://github.com/apatha32/AgentOps" target="_blank" rel="noopener">GitHub</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">Multi-Agent Ops Platform</div>
+  <h1>AI agents that <span>triage, research,</span> and resolve incidents in real time</h1>
+  <p class="hero-sub">
+    AgentOps is a multi-agent orchestration platform where specialized AI agents collaborate on incoming operational tasks, with every reasoning step, tool call, and handoff streamed live to a dashboard.
+  </p>
+  <div class="hero-actions">
+    <a href="#" class="btn btn-disabled">Live Demo (coming soon)</a>
+    <a href="https://github.com/apatha32/AgentOps" target="_blank" rel="noopener" class="btn btn-ghost">View on GitHub</a>
+    <a href="#quickstart" class="btn btn-ghost">Quickstart</a>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- HOW IT WORKS -->
+<section class="pipeline-section" id="how-it-works">
+  <div class="section-label">Architecture</div>
+  <h2 class="section-title">Three agents, one pipeline</h2>
+  <p class="section-sub">
+    Each incoming task flows through a LangGraph StateGraph. The triage agent classifies the incident and conditionally routes it: unclear root cause goes to the research agent first; known patterns go straight to the resolver.
+  </p>
+
+  <div class="pipeline">
+    <!-- Input -->
+    <div class="pipeline-node border-infra">
+      <div class="node-tag tag-infra">Input</div>
+      <div class="node-name">Task / Alert</div>
+      <div class="node-desc">REST POST from user or monitoring system</div>
+    </div>
+
+    <div class="pipeline-arrow">&#8594;</div>
+
+    <!-- Triage -->
+    <div class="pipeline-node border-triage">
+      <div class="node-tag tag-triage">Agent 1</div>
+      <div class="node-name">Triage Agent</div>
+      <div class="node-desc">Classifies category, priority, and next agent</div>
+    </div>
+
+    <div class="pipeline-arrow">&#8594;</div>
+
+    <!-- Research + Resolver split -->
+    <div class="pipeline-split">
+      <div class="split-row">
+        <div class="pipeline-node border-research" style="flex:1;">
+          <div class="node-tag tag-research">Agent 2 (optional)</div>
+          <div class="node-name">Research Agent</div>
+          <div class="node-desc">Calls tools, synthesizes root cause hypothesis</div>
+        </div>
+        <div class="pipeline-arrow">&#8594;</div>
+        <div class="pipeline-node border-resolver" style="flex:1;">
+          <div class="node-tag tag-resolver">Agent 3</div>
+          <div class="node-name">Resolver Agent</div>
+          <div class="node-desc">Produces ordered action plan with confidence score</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top:1.5rem; font-size:0.8rem; color:var(--muted); font-family:'JetBrains Mono',monospace;">
+    Every agent step is written to Postgres and broadcast on a Redis pub/sub channel, powering live SSE streaming to the dashboard.
+  </p>
+</section>
+
+<hr class="divider" />
+
+<!-- FEATURES -->
+<section class="features-section" id="features">
+  <div class="section-label">Features</div>
+  <h2 class="section-title">What it demonstrates</h2>
+  <p class="section-sub">Each feature is directly demoable and maps to a real interview question domain.</p>
+
+  <div class="features-grid">
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(168,85,247,0.12);">
+        <span style="color:var(--purple); font-family:monospace; font-weight:700;">LG</span>
+      </div>
+      <h3>LangGraph Orchestration</h3>
+      <p>A typed StateGraph with conditional edges routes tasks between agents. State is passed immutably between nodes; the graph is compiled once and reused per request.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(249,115,22,0.12);">
+        <span style="color:var(--orange); font-family:monospace; font-weight:700;">CB</span>
+      </div>
+      <h3>Circuit Breaker</h3>
+      <p>Each tool call is wrapped in a circuit breaker (CLOSED / OPEN / HALF_OPEN). After 3 consecutive failures the circuit trips open and a fallback response is returned. After a configurable timeout, a probe is sent and the circuit closes on success.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(34,197,94,0.12);">
+        <span style="color:var(--green); font-family:monospace; font-weight:700;">RT</span>
+      </div>
+      <h3>Live Trace Streaming</h3>
+      <p>Every agent event is published to a Redis channel and forwarded to the browser via Server-Sent Events. The dashboard shows agent reasoning, tool calls, and latency updating in real time.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(59,130,246,0.12);">
+        <span style="color:var(--blue); font-family:monospace; font-weight:700;">DB</span>
+      </div>
+      <h3>Full Audit Log</h3>
+      <p>Every agent decision, tool call, and handoff is persisted to Postgres via SQLAlchemy async. The schema includes task_id, agent_name, event_type, JSON payload, and latency_ms on every row.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(99,102,241,0.12);">
+        <span style="color:var(--accent2); font-family:monospace; font-weight:700;">OB</span>
+      </div>
+      <h3>Prometheus + OpenTelemetry</h3>
+      <p>Five custom Prometheus metrics: agent steps/sec, per-agent latency histogram (p50/p95/p99), task outcomes, tool call results, and circuit breaker trips. OTel traces exported via OTLP gRPC.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(168,85,247,0.12);">
+        <span style="color:var(--purple); font-family:monospace; font-weight:700">EV</span>
+      </div>
+      <h3>Eval Harness</h3>
+      <p>A 20-task evaluation suite measures category classification accuracy and agent routing accuracy. Runs without a live LLM in CI. Analogous to RAGAS-style agent evals.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(34,197,94,0.12);">
+        <span style="color:var(--green); font-family:monospace; font-weight:700;">K8</span>
+      </div>
+      <h3>Kubernetes + HPA</h3>
+      <p>Kubernetes manifests with health probes, resource limits, and a HorizontalPodAutoscaler scaling from 2 to 10 API replicas on CPU (60%) and memory (70%) utilization.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:rgba(249,115,22,0.12);">
+        <span style="color:var(--orange); font-family:monospace; font-weight:700;">CI</span>
+      </div>
+      <h3>GitHub Actions CI</h3>
+      <p>Three jobs on every push: Python tests (pytest with mocked LLM and in-memory SQLite), TypeScript type check and Vite production build, and Ruff lint.</p>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- STACK -->
+<section class="stack-section" id="stack">
+  <div class="section-label">Tech Stack</div>
+  <h2 class="section-title">Built with</h2>
+  <p class="section-sub" style="margin-bottom:1.75rem;">Every layer is chosen to mirror what appears in AI Engineer and senior SDE interviews.</p>
+
+  <div class="stack-grid">
+    <div class="stack-item">
+      <span class="stack-layer">Orchestration</span>
+      <span class="stack-tech">LangGraph</span>
+      <span class="stack-detail">StateGraph, conditional edges, compiled graph</span>
+    </div>
+    <div class="stack-item">
+      <span class="stack-layer">LLM</span>
+      <span class="stack-tech">OpenAI GPT-4o-mini</span>
+      <span class="stack-detail">Async tool calling via LangChain</span>
+    </div>
+    <div class="stack-item">
+      <span class="stack-layer">API</span>
+      <span class="stack-tech">FastAPI + Uvicorn</span>
+      <span class="stack-detail">REST + SSE, API key middleware</span>
+    </div>
+    <div class="stack-item">
+      <span class="stack-layer">Streaming</span>
+      <span class="stack-tech">Redis pub/sub</span>
+      <span class="stack-detail">Agent events broadcast to SSE clients</span>
+    </div>
+    <div class="stack-item">
+      <span class="stack-layer">Persistence</span>
+      <span class="stack-tech">PostgreSQL</span>
+      <span class="stack-detail">SQLAlchemy async + Alembic migrations</span>
+    </div>
+    <div class="stack-item">
+      <span class="stack-layer">Resilience</span>
+      <span class="stack-tech">Circuit Breaker</span>
+      <span class="stack-detail">Custom CLOSED / OPEN / HALF_OPEN state machine</span>
+    </div>
+    <div class="stack-item">
+      <span class="stack-layer">Metrics</span>
+      <span class="stack-tech">Prometheus</span>
+      <span class="stack-detail">Histograms, counters, Grafana dashboards</span>
+    </div>
+    <div class="stack-item">
+      <span class="stack-layer">Tracing</span>
+      <span class="stack-tech">OpenTelemetry</span>
+      <span class="stack-detail">OTLP gRPC export, OTel Collector sidecar</span>
+    </div>
+    <div class="stack-item">
+      <span class="stack-layer">Dashboard</span>
+      <span class="stack-tech">React + Vite + Tailwind</span>
+      <span class="stack-detail">Live trace viewer, latency charts via Recharts</span>
+    </div>
+    <div class="stack-item">
+      <span class="stack-layer">Containers</span>
+      <span class="stack-tech">Docker Compose</span>
+      <span class="stack-detail">Full local stack: API, dashboard, Postgres, Redis, Grafana</span>
+    </div>
+    <div class="stack-item">
+      <span class="stack-layer">Production</span>
+      <span class="stack-tech">Kubernetes + HPA</span>
+      <span class="stack-detail">Auto-scaling, health probes, resource limits</span>
+    </div>
+    <div class="stack-item">
+      <span class="stack-layer">CI</span>
+      <span class="stack-tech">GitHub Actions</span>
+      <span class="stack-detail">pytest, tsc + vite build, ruff lint</span>
+    </div>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- QUICKSTART -->
+<section class="quickstart-section" id="quickstart">
+  <div class="section-label">Quickstart</div>
+  <h2 class="section-title">Run it locally</h2>
+  <p class="section-sub">Docker Compose starts the entire stack in one command.</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-dot" style="background:#ff5f57;"></div>
+      <div class="code-dot" style="background:#febc2e;"></div>
+      <div class="code-dot" style="background:#28c840;"></div>
+      <span class="code-title">bash</span>
+    </div>
+    <pre><span class="c-comment"># Clone and configure</span>
+git clone https://github.com/apatha32/AgentOps.git
+cd AgentOps
+cp .env.example .env
+<span class="c-comment"># Edit .env and set OPENAI_API_KEY=sk-...</span>
+
+<span class="c-comment"># Start the full stack</span>
+docker compose up --build
+
+<span class="c-comment"># Dashboard     ->  http://localhost:3000</span>
+<span class="c-comment"># API docs      ->  http://localhost:8000/docs</span>
+<span class="c-comment"># Prometheus    ->  http://localhost:9090</span>
+<span class="c-comment"># Grafana       ->  http://localhost:3001  (admin / agentops)</span>
+
+<span class="c-comment"># Run the eval harness (no Docker needed)</span>
+python -m evals.harness --output results.json</pre>
+  </div>
+</section>
+
+<hr class="divider" />
+
+<!-- INTERVIEW SECTION -->
+<section class="interview-section" id="interviews">
+  <div class="section-label">Interview Angles</div>
+  <h2 class="section-title">One project, three interview tracks</h2>
+  <p class="section-sub">Every component maps to a concrete question type.</p>
+
+  <div class="interview-grid">
+    <div class="interview-card">
+      <h3>AI Engineer</h3>
+      <ul>
+        <li>Multi-agent LangGraph StateGraph with conditional routing</li>
+        <li>Tool calling with circuit breaker protection and fallbacks</li>
+        <li>Eval harness measuring category and routing accuracy</li>
+        <li>Redis pub/sub for real-time agent trace streaming</li>
+        <li>Structured agent event schema for replay and debugging</li>
+      </ul>
+    </div>
+    <div class="interview-card">
+      <h3>FDE / Product Engineering</h3>
+      <ul>
+        <li>Ambiguous ops problem decomposed end to end</li>
+        <li>Iterative delivery: each stage is independently demoable</li>
+        <li>Triage routes uncertain cases to a research path, not a hard failure</li>
+        <li>Live dashboard makes agent reasoning visible to non-engineers</li>
+        <li>Confidence score and escalation flag surface uncertainty explicitly</li>
+      </ul>
+    </div>
+    <div class="interview-card">
+      <h3>SDE / Systems</h3>
+      <ul>
+        <li>Distributed message passing via Redis pub/sub</li>
+        <li>Circuit breaker state machine (CLOSED / OPEN / HALF_OPEN)</li>
+        <li>Async SQLAlchemy with Alembic versioned migrations</li>
+        <li>Prometheus histograms: p50, p95, p99 per agent</li>
+        <li>Kubernetes HPA scaling on CPU and memory thresholds</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>
+    Built by <a href="https://github.com/apatha32" target="_blank" rel="noopener">Ambarish Pathak</a>.
+    Source on <a href="https://github.com/apatha32/AgentOps" target="_blank" rel="noopener">GitHub</a>.
+  </p>
+</footer>
+
+</body>
+</html>
