@@ -87,7 +87,11 @@ app.include_router(traces_router)
 
 @app.get("/health", tags=["health"])
 async def health():
-    return {"status": "ok"}
+    import os
+    dsn = settings.postgres_dsn
+    import re
+    masked = re.sub(r"://[^:]+:[^@]+@", "://***:***@", dsn)
+    return {"status": "ok", "v": "6", "dsn": masked, "redis": settings.redis_url[:30]}
 
 
 @app.get("/debug-config", include_in_schema=False)
