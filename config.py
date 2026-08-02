@@ -4,12 +4,24 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 def _postgres_dsn_default() -> str:
-    """Railway injects DATABASE_URL as postgres://... — convert to asyncpg scheme."""
+    """Railway injects DATABASE_URL as postgres://... — convert to asyncpg scheme.
+    Also checks POSTGRES_DSN directly, then falls back to DATABASE_URL.
+    """
+    # Explicit override takes priority
+    explicit = os.environ.get("POSTGRES_DSN", "")
+    if explicit and "localhost" not in explicit and "127.0.0.1" not in explicit:
+        return explicit.replace("postgres://", "postgresql+asyncpg://", 1).replace(
+            "postgresql://", "postgresql+asyncpg://", 1
+        )
+
+    # Railway's auto-injected DATABASE_URL
     raw = os.environ.get("DATABASE_URL", "")
     if raw:
         return raw.replace("postgres://", "postgresql+asyncpg://", 1).replace(
             "postgresql://", "postgresql+asyncpg://", 1
         )
+
+    # Local default
     return "postgresql+asyncpg://agentops:agentops@localhost:5432/agentops"
 
 
