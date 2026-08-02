@@ -57,7 +57,7 @@ async def global_exception_handler(request: Request, exc: Exception):
         headers["Access-Control-Allow-Credentials"] = "true"
     return JSONResponse(
         status_code=500,
-        content={"detail": "Internal server error"},
+        content={"detail": "Internal server error", "error": str(exc)},
         headers=headers,
     )
 
@@ -90,15 +90,13 @@ async def health():
     return {"status": "ok"}
 
 
-@app.get("/_debug/config", include_in_schema=False)
+@app.get("/debug-config", include_in_schema=False)
 async def debug_config():
-    """Temporary: shows DSN host only (no password) to verify config."""
-    from config import settings
+    """Temporary: shows DSN host only to verify config."""
     import re
     dsn = settings.postgres_dsn
-    # Mask password but show host
     masked = re.sub(r"://[^:]+:[^@]+@", "://***:***@", dsn)
-    return {"postgres_dsn_masked": masked, "redis_url": settings.redis_url[:30] + "..."}
+    return {"postgres_dsn_masked": masked, "redis_url": settings.redis_url[:40]}
 
 
 @app.get("/", include_in_schema=False)
