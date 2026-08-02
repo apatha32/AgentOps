@@ -46,6 +46,22 @@ app.add_middleware(
 )
 
 
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    import logging
+    logging.getLogger(__name__).exception("Unhandled error: %s", exc)
+    origin = request.headers.get("origin", "")
+    headers = {}
+    if origin in _origins or "*" in _origins:
+        headers["Access-Control-Allow-Origin"] = origin or "*"
+        headers["Access-Control-Allow-Credentials"] = "true"
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal server error"},
+        headers=headers,
+    )
+
+
 @app.middleware("http")
 async def api_key_middleware(request: Request, call_next):
     """Reject requests missing a valid X-API-Key header when API_KEY is configured."""
