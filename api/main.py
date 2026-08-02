@@ -60,7 +60,10 @@ async def api_key_middleware(request: Request, call_next):
     return await call_next(request)
 
 # Prometheus /metrics endpoint
-Instrumentator().instrument(app).expose(app)
+try:
+    Instrumentator().instrument(app).expose(app)
+except Exception:
+    pass  # Prometheus instrumentation is optional
 
 app.include_router(tasks_router)
 app.include_router(traces_router)
@@ -69,3 +72,8 @@ app.include_router(traces_router)
 @app.get("/health", tags=["health"])
 async def health():
     return {"status": "ok"}
+
+
+@app.get("/", include_in_schema=False)
+async def root():
+    return {"status": "ok", "service": "AgentOps API"}
