@@ -20,7 +20,11 @@ _EXEMPT_PATHS = {"/health", "/metrics", "/openapi.json", "/docs", "/redoc"}
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_tracing("agentops-api")
-    await create_tables()
+    try:
+        await create_tables()
+    except Exception as exc:
+        import logging
+        logging.getLogger(__name__).error("DB table init failed: %s", exc)
     yield
 
 
