@@ -1,4 +1,6 @@
-const BASE = '/api'
+// In production (Vercel), set VITE_API_URL to the Railway API base URL.
+// In local dev, Vite proxies /api -> http://localhost:8000 so BASE stays '/api'.
+const BASE = import.meta.env.VITE_API_URL ?? '/api'
 
 export async function fetchTasks() {
   const res = await fetch(`${BASE}/tasks/`)

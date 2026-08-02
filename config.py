@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     app_env: str = "development"
     log_level: str = "INFO"
     api_key: str = ""  # When set, all non-health requests require X-API-Key header
+    cors_origins: str = "*"  # Comma-separated list of allowed origins, e.g. https://agentops.vercel.app
 
 
 settings = Settings()
