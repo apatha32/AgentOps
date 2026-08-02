@@ -90,6 +90,17 @@ async def health():
     return {"status": "ok"}
 
 
+@app.get("/_debug/config", include_in_schema=False)
+async def debug_config():
+    """Temporary: shows DSN host only (no password) to verify config."""
+    from config import settings
+    import re
+    dsn = settings.postgres_dsn
+    # Mask password but show host
+    masked = re.sub(r"://[^:]+:[^@]+@", "://***:***@", dsn)
+    return {"postgres_dsn_masked": masked, "redis_url": settings.redis_url[:30] + "..."}
+
+
 @app.get("/", include_in_schema=False)
 async def root():
     return {"status": "ok", "service": "AgentOps API"}
